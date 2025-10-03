@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Colores principales de la app -->
+    <color name="primary_color">#4A90E2</color>
+    <color name="primary_dark">#357ABD</color>
+    <color name="accent_color">#FF6B6B</color>
+    
+    <!-- Colores para las tarjetas -->
+    <color name="card_today">#4CAF50</color>
+    <color name="card_create">#FF9800</color>
+    <color name="card_profile">#9C27B0</color>
+    <color name="card_caregiver">#607D8B</color>
+    
+    <!-- Colores de fondo -->
+    <color name="background_light">#F5F5F5</color>
+    <color name="background_white">#FFFFFF</color>
+    
+    <!-- Colores de texto -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+</resources>

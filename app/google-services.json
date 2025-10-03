@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760310251185",
+    "project_id": "mirutinavisual",
+    "storage_bucket": "mirutinavisual.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760310251185:android:3e42a8465d183c933fec90",
+        "android_client_info": {
+          "package_name": "com.example.mirutinavisual"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsWoPd1FeaZrQQFZWM3O824pwOO5WODIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
