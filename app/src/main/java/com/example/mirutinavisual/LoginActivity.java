@@ -41,10 +41,12 @@ public class LoginActivity extends AppCompatActivity implements TextToSpeech.OnI
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             // Usuario ya está logueado, ir a MainActivity
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+            handleUserAlreadyLoggedIn();
             return;
         }
+        
+        // Verificar si viene de una notificación
+        checkNotificationIntent();
         
         // Inicializar vistas
         initViews();
@@ -114,10 +116,8 @@ public class LoginActivity extends AppCompatActivity implements TextToSpeech.OnI
                         speakText("Bienvenido de nuevo");
                         showToast("¡Bienvenido!");
                         
-                        // Ir a MainActivity
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        // Ir a MainActivity (con posible notificación pendiente)
+                        navigateToMainActivity();
                         
                     } else {
                         // Error en login
@@ -173,10 +173,8 @@ public class LoginActivity extends AppCompatActivity implements TextToSpeech.OnI
                         speakText("Cuenta creada exitosamente. Bienvenido");
                         showToast("¡Cuenta creada! Bienvenido");
                         
-                        // Ir a MainActivity
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        // Ir a MainActivity (con posible notificación pendiente)
+                        navigateToMainActivity();
                         
                     } else {
                         // Error en registro
@@ -249,6 +247,53 @@ public class LoginActivity extends AppCompatActivity implements TextToSpeech.OnI
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    
+    // Método para verificar si viene de una notificación
+    private void checkNotificationIntent() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getBooleanExtra("from_notification", false)) {
+            String activityName = intent.getStringExtra("pending_activity_name");
+            if (activityName != null) {
+                System.out.println("LOGIN: Usuario llegó desde notificación de: " + activityName);
+                showToast("🔔 Tienes un recordatorio pendiente: " + activityName);
+                speakText("Tienes un recordatorio pendiente para " + activityName + ". Por favor inicia sesión para continuar.");
+            }
+        }
+    }
+    
+    // Método para manejar usuario ya logueado
+    private void handleUserAlreadyLoggedIn() {
+        Intent intent = getIntent();
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        
+        // Si viene de notificación, pasar los datos
+        if (intent != null && intent.getBooleanExtra("from_notification", false)) {
+            mainIntent.putExtra("from_notification", true);
+            mainIntent.putExtra("activity_name", intent.getStringExtra("pending_activity_name"));
+            mainIntent.putExtra("activity_id", intent.getStringExtra("pending_activity_id"));
+            System.out.println("LOGIN: Usuario ya logueado, redirigiendo desde notificación");
+        }
+        
+        startActivity(mainIntent);
+        finish();
+    }
+    
+    // Método para navegar a MainActivity manejando notificaciones pendientes
+    private void navigateToMainActivity() {
+        Intent currentIntent = getIntent();
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        
+        // Si viene de notificación, pasar los datos
+        if (currentIntent != null && currentIntent.getBooleanExtra("from_notification", false)) {
+            mainIntent.putExtra("from_notification", true);
+            mainIntent.putExtra("activity_name", currentIntent.getStringExtra("pending_activity_name"));
+            mainIntent.putExtra("activity_id", currentIntent.getStringExtra("pending_activity_id"));
+            System.out.println("LOGIN: Redirigiendo a MainActivity con notificación pendiente");
+        }
+        
+        startActivity(mainIntent);
+        finish();
     }
 
     @Override

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/dialogTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="➕ Agregar Nuevo Paso"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Nombre del paso -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📝 Nombre del Paso"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/stepNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Ej: Poner camiseta, Cepillar dientes..."
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:background="@drawable/edittext_background"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Descripción del paso -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📋 Descripción (Instrucciones)"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/stepDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="Ej: Toma tu camiseta favorita y póntela con cuidado"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:background="@drawable/edittext_background"
+        android:inputType="textMultiLine"
+        android:maxLines="3"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Seleccionar pictograma -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🎨 Pictograma del Paso"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/stepPictogramSearchEditText"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:hint="Buscar pictograma..."
+            android:textSize="14sp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_background"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/searchStepPictogramButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="🔍"
+            android:textSize="16sp"
+            android:background="@drawable/button_primary"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="16dp" />
+
+    </LinearLayout>
+
+    <!-- Pictograma seleccionado -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        android:backgroundTint="@color/background_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/selectedStepPictogramImageView"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/image_background"
+                android:padding="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_placeholder"
+                android:contentDescription="Pictograma seleccionado" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/selectedStepPictogramNameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ningún pictograma seleccionado"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:id="@+id/selectedStepPictogramIdText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Busca y selecciona un pictograma"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Grid de pictogramas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stepPictogramsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="24dp"
+        android:visibility="gone" />
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/cancelStepButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="❌ Cancelar"
+            android:textSize="16sp"
+            android:background="@drawable/button_secondary"
+            android:textColor="@android:color/white"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/saveStepButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="✅ Guardar"
+            android:textSize="16sp"
+            android:background="@drawable/button_primary"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

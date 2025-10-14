@@ -104,6 +104,18 @@
 
             </LinearLayout>
 
+            <!-- Botón de Recompensas -->
+            <Button
+                android:id="@+id/rewardsButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
+                android:text="🏆 Mis Recompensas"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:background="@drawable/button_accent"
+                android:textColor="@android:color/white" />
+
             <!-- Nombre -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

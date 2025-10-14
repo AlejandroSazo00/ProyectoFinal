@@ -35,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
     private ImageView profileImageView;
     private EditText nameEditText, ageEditText;
     private Spinner needTypeSpinner;
-    private Button saveButton, selectPhotoButton, takePhotoButton;
+    private Button saveButton, selectPhotoButton, takePhotoButton, rewardsButton;
     private ImageButton backButton;
     
     private SharedPreferences sharedPreferences;
@@ -77,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
         saveButton = findViewById(R.id.saveButton);
         selectPhotoButton = findViewById(R.id.selectPhotoButton);
         takePhotoButton = findViewById(R.id.takePhotoButton);
+        rewardsButton = findViewById(R.id.rewardsButton);
         backButton = findViewById(R.id.backButton);
         
         // Configurar spinner con tipos de necesidades
@@ -157,6 +158,12 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
         saveButton.setOnClickListener(v -> {
             speakText("Guardar perfil");
             saveUserData();
+        });
+
+        rewardsButton.setOnClickListener(v -> {
+            speakText("Abrir mis recompensas");
+            Intent intent = new Intent(ProfileActivity.this, RewardsActivity.class);
+            startActivity(intent);
         });
 
         profileImageView.setOnClickListener(v -> {
@@ -254,6 +261,63 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
         nameEditText.setText(name);
         ageEditText.setText(age);
         needTypeSpinner.setSelection(needType);
+        
+        // Cargar avatar (pictograma o foto)
+        loadUserAvatar();
+    }
+    
+    private void loadUserAvatar() {
+        String avatarType = sharedPreferences.getString("avatar_type", "");
+        
+        if ("pictogram".equals(avatarType)) {
+            // Cargar pictograma como avatar
+            String pictogramId = sharedPreferences.getString("avatar_pictogram_id", "");
+            if (!pictogramId.isEmpty()) {
+                loadPictogramAsAvatar(pictogramId);
+            } else {
+                // Avatar por defecto
+                profileImageView.setImageResource(R.drawable.ic_profile_default);
+            }
+        } else {
+            // Intentar cargar foto guardada (funcionalidad existente)
+            String imagePath = sharedPreferences.getString("profile_image_path", "");
+            if (!imagePath.isEmpty()) {
+                try {
+                    android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeFile(imagePath);
+                    if (bitmap != null) {
+                        profileImageView.setImageBitmap(bitmap);
+                    } else {
+                        profileImageView.setImageResource(R.drawable.ic_profile_default);
+                    }
+                } catch (Exception e) {
+                    System.out.println("PROFILE: Error al cargar imagen: " + e.getMessage());
+                    profileImageView.setImageResource(R.drawable.ic_profile_default);
+                }
+            } else {
+                profileImageView.setImageResource(R.drawable.ic_profile_default);
+            }
+        }
+    }
+    
+    private void loadPictogramAsAvatar(String pictogramId) {
+        String imageUrl = "https://api.arasaac.org/api/pictograms/" + pictogramId + "?download=false";
+        
+        // Usar Glide para cargar la imagen
+        com.bumptech.glide.Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_profile_default)
+            .error(R.drawable.ic_profile_default)
+            .circleCrop() // Hacer la imagen circular
+            .into(profileImageView);
+            
+        System.out.println("PROFILE: Cargando pictograma como avatar: " + pictogramId);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Recargar avatar por si se cambió en RewardsActivity
+        loadUserAvatar();
     }
 
     @Override

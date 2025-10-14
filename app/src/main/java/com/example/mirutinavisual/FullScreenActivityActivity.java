@@ -60,17 +60,37 @@ public class FullScreenActivityActivity extends AppCompatActivity implements Tex
     }
 
     private void setupFullScreen() {
-        // Mantener pantalla encendida
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        
-        // Pantalla completa
-        getWindow().getDecorView().setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_FULLSCREEN |
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+        try {
+            // Mantener pantalla encendida (más seguro para emuladores)
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            
+            // Solo en dispositivos reales, no en emuladores
+            if (!isEmulator()) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            }
+            
+            // Pantalla completa más suave
+            getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+            );
+            
+        } catch (Exception e) {
+            // Si falla, continuar sin pantalla completa
+            System.out.println("Error configurando pantalla completa: " + e.getMessage());
+        }
+    }
+    
+    private boolean isEmulator() {
+        return android.os.Build.FINGERPRINT.startsWith("generic")
+                || android.os.Build.FINGERPRINT.startsWith("unknown")
+                || android.os.Build.MODEL.contains("google_sdk")
+                || android.os.Build.MODEL.contains("Emulator")
+                || android.os.Build.MODEL.contains("Android SDK built for x86")
+                || android.os.Build.MANUFACTURER.contains("Genymotion")
+                || (android.os.Build.BRAND.startsWith("generic") && android.os.Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(android.os.Build.PRODUCT);
     }
 
     private void getIntentData() {
@@ -110,7 +130,7 @@ public class FullScreenActivityActivity extends AppCompatActivity implements Tex
 
         closeButton.setOnClickListener(v -> {
             speakText("Cerrando recordatorio");
-            finish();
+            goToTodayRoutine();
         });
 
         // Hacer que la imagen sea clickeable para repetir el mensaje
@@ -148,14 +168,14 @@ public class FullScreenActivityActivity extends AppCompatActivity implements Tex
                     .child("completed").setValue(true)
                     .addOnSuccessListener(aVoid -> {
                         showToast("¡Actividad completada! 🎉");
-                        finish();
+                        goToTodayRoutine();
                     })
                     .addOnFailureListener(e -> {
                         showToast("Error al marcar como completada");
                     });
         } else {
             showToast("¡Muy bien! Actividad completada 🎉");
-            finish();
+            goToTodayRoutine();
         }
     }
 
@@ -179,6 +199,14 @@ public class FullScreenActivityActivity extends AppCompatActivity implements Tex
         notificationService.scheduleActivityReminder(tempActivity);
         
         showToast("Recordatorio pospuesto por 5 minutos");
+        goToTodayRoutine();
+    }
+
+    private void goToTodayRoutine() {
+        // Redirigir siempre a "Mi Rutina de Hoy" para el niño
+        Intent intent = new Intent(this, TodayRoutineActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 

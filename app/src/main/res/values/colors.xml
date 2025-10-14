@@ -3,23 +3,42 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
+    <!-- Colores para personalización y secuencias -->
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+    <color name="error">#F44336</color>
+    
+    <!-- Colores de fondo -->
+    <color name="background_light">#F8F9FA</color>
+    <color name="background_white">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="progress_background">#E0E0E0</color>
+    <color name="info_background">#E3F2FD</color>
+    
+    <!-- Colores de texto -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+    <color name="info_text">#1976D2</color>
+    
+    <!-- Colores personalizables -->
+    <color name="theme_blue">#2196F3</color>
+    <color name="theme_green">#4CAF50</color>
+    <color name="theme_orange">#FF9800</color>
+    <color name="theme_purple">#9C27B0</color>
+    <color name="theme_pink">#E91E63</color>
+    
     <!-- Colores principales de la app -->
     <color name="primary_color">#4A90E2</color>
     <color name="primary_dark">#357ABD</color>
     <color name="accent_color">#FF6B6B</color>
+    <color name="primary">#4A90E2</color>
+    <color name="green">#4CAF50</color>
     
     <!-- Colores para las tarjetas -->
     <color name="card_today">#4CAF50</color>
     <color name="card_create">#FF9800</color>
     <color name="card_profile">#9C27B0</color>
     <color name="card_caregiver">#607D8B</color>
-    
-    <!-- Colores de fondo -->
-    <color name="background_light">#F5F5F5</color>
-    <color name="background_white">#FFFFFF</color>
-    
-    <!-- Colores de texto -->
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="text_hint">#BDBDBD</color>
 </resources>

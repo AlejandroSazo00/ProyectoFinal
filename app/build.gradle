@@ -57,6 +57,9 @@ dependencies {
     // ViewPager2 para navegación
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     
+    // Gson para JSON
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

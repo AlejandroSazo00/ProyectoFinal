@@ -18,18 +18,21 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         int pictogramId = intent.getIntExtra("pictogram_id", 0);
         String pictogramKeyword = intent.getStringExtra("pictogram_keyword");
         
+        System.out.println("BROADCAST: Recibido recordatorio para: " + activityName);
+        System.out.println("BROADCAST: ID: " + activityId + ", Hora: " + activityTime);
+        
         if (activityName != null && activityId != null) {
             // Crear servicio de notificaciones
             NotificationService notificationService = new NotificationService(context);
             
-            // Mostrar notificación y pantalla completa
-            notificationService.showActivityNotification(activityName, activityId, pictogramId);
+            // Mostrar notificación suave
+            notificationService.showActivityNotification(activityName, activityId);
             
-            // Vibrar el dispositivo
+            // Vibrar el dispositivo (más suave)
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrator != null) {
-                // Patrón de vibración: esperar 0ms, vibrar 1000ms, esperar 500ms, vibrar 1000ms
-                long[] pattern = {0, 1000, 500, 1000};
+                // Patrón de vibración más suave: esperar 0ms, vibrar 500ms, esperar 200ms, vibrar 500ms
+                long[] pattern = {0, 500, 200, 500};
                 vibrator.vibrate(pattern, -1); // -1 significa no repetir
             }
             
@@ -44,9 +47,9 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
             
-            // Programar la misma actividad para mañana
-            // (Las rutinas se repiten diariamente)
-            scheduleForTomorrow(context, activityId, activityName, activityTime, pictogramId, pictogramKeyword);
+            // NO programar automáticamente para mañana
+            // El usuario decide cuándo quiere las rutinas
+            System.out.println("RECORDATORIO: Notificación enviada, no se reprogramará automáticamente");
         }
     }
     

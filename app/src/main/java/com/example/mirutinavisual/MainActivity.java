@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private TextView welcomeText, userNameText;
     private ImageView profileImage;
     private ImageButton settingsButton;
-    private CardView todayRoutineCard, createRoutineCard, profileCard, caregiverCard;
+    private CardView todayRoutineCard, profileCard, caregiverCard;
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
 
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         
         // Inicializar SharedPreferences
         sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        
+        // Verificar si viene de una notificación
+        checkNotificationIntent();
         
         // Inicializar vistas
         initViews();
@@ -72,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         settingsButton = findViewById(R.id.settingsButton);
         
         todayRoutineCard = findViewById(R.id.todayRoutineCard);
-        createRoutineCard = findViewById(R.id.createRoutineCard);
         profileCard = findViewById(R.id.profileCard);
         caregiverCard = findViewById(R.id.caregiverCard);
     }
@@ -84,11 +88,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             startActivity(intent);
         });
 
-        createRoutineCard.setOnClickListener(v -> {
-            speakText("Crear nueva rutina");
-            Intent intent = new Intent(MainActivity.this, CreateRoutineActivity.class);
-            startActivity(intent);
-        });
 
         profileCard.setOnClickListener(v -> {
             speakText("Abriendo mi perfil");
@@ -97,9 +96,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         });
 
         caregiverCard.setOnClickListener(v -> {
-            speakText("Activando modo cuidador");
-            Intent intent = new Intent(MainActivity.this, CaregiverModeActivity.class);
-            startActivity(intent);
+            speakText("Acceso restringido. Ingrese contraseña del cuidador");
+            showCaregiverPasswordDialog();
         });
 
         settingsButton.setOnClickListener(v -> {
@@ -143,6 +141,43 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+    
+    // Método para verificar si viene de una notificación
+    private void checkNotificationIntent() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getBooleanExtra("from_notification", false)) {
+            String activityName = intent.getStringExtra("activity_name");
+            String activityId = intent.getStringExtra("activity_id");
+            
+            if (activityName != null) {
+                System.out.println("MAIN: Usuario llegó desde notificación de: " + activityName);
+                showToast("🔔 Recordatorio: " + activityName);
+                speakText("Tienes un recordatorio para " + activityName + ". Puedes ir a Mi Rutina de Hoy para verlo.");
+                
+                // Opcional: Resaltar el botón "Mi Rutina de Hoy"
+                highlightTodayRoutineButton();
+            }
+        }
+    }
+    
+    // Método para resaltar visualmente el botón de rutina de hoy
+    private void highlightTodayRoutineButton() {
+        if (todayRoutineCard != null) {
+            // Animación sutil para llamar la atención
+            todayRoutineCard.animate()
+                .scaleX(1.05f)
+                .scaleY(1.05f)
+                .setDuration(300)
+                .withEndAction(() -> {
+                    todayRoutineCard.animate()
+                        .scaleX(1.0f)
+                        .scaleY(1.0f)
+                        .setDuration(300)
+                        .start();
+                })
+                .start();
+        }
+    }
 
     private void loadUserData() {
         // Obtener usuario de Firebase
@@ -169,6 +204,85 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         super.onResume();
         // Actualizar datos del usuario cuando regrese de la pantalla de perfil
         loadUserData();
+    }
+
+    private void showCaregiverPasswordDialog() {
+        // Crear el diálogo de contraseña
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("🔐 Acceso de Cuidador");
+        builder.setMessage("Solo el cuidador puede acceder a esta sección.\nIngrese su contraseña:");
+
+        // Crear campo de contraseña
+        final EditText passwordInput = new EditText(this);
+        passwordInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        passwordInput.setHint("Contraseña del cuidador");
+        passwordInput.setTextSize(18);
+        passwordInput.setTextColor(0xFF000000); // Negro
+        passwordInput.setHintTextColor(0xFF888888); // Gris
+        passwordInput.setPadding(50, 30, 50, 30);
+        passwordInput.setBackgroundResource(android.R.drawable.edit_text);
+        
+        builder.setView(passwordInput);
+
+        // Botón Acceder
+        builder.setPositiveButton("🔑 Acceder", (dialog, which) -> {
+            String enteredPassword = passwordInput.getText().toString().trim();
+            
+            if (enteredPassword.isEmpty()) {
+                speakText("Debe ingresar una contraseña");
+                showToast("Debe ingresar una contraseña");
+                return;
+            }
+            
+            // Verificar contraseña con Firebase Auth
+            verifyPasswordAndAccess(enteredPassword);
+        });
+
+        // Botón Cancelar
+        builder.setNegativeButton("❌ Cancelar", (dialog, which) -> {
+            speakText("Acceso cancelado");
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        
+        // Hacer que el diálogo sea más accesible
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16);
+    }
+
+    private void verifyPasswordAndAccess(String password) {
+        // Obtener el email del usuario actual
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser == null || currentUser.getEmail() == null) {
+            speakText("Error de autenticación");
+            showToast("Error de autenticación");
+            return;
+        }
+
+        String email = currentUser.getEmail();
+        
+        // Intentar autenticar con la contraseña ingresada
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Contraseña correcta - acceder al modo cuidador
+                    speakText("Acceso autorizado. Entrando al modo cuidador");
+                    showToast("✅ Acceso autorizado");
+                    
+                    Intent intent = new Intent(MainActivity.this, CaregiverModeActivity.class);
+                    startActivity(intent);
+                } else {
+                    // Contraseña incorrecta
+                    speakText("Contraseña incorrecta. Acceso denegado");
+                    showToast("❌ Contraseña incorrecta");
+                }
+            })
+            .addOnFailureListener(e -> {
+                speakText("Error al verificar contraseña");
+                showToast("Error al verificar contraseña: " + e.getMessage());
+            });
     }
 
     @Override

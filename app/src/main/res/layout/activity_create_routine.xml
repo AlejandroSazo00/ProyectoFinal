@@ -233,6 +233,59 @@
 
             </androidx.cardview.widget.CardView>
 
+            <!-- Sección de Pasos Personalizados -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📝 Pasos de la Actividad"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agrega pasos específicos que el niño debe seguir"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Lista de pasos -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/stepsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:nestedScrollingEnabled="false" />
+
+                    <!-- Botón para agregar paso -->
+                    <Button
+                        android:id="@+id/addStepButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="➕ Agregar Paso"
+                        android:textSize="16sp"
+                        android:background="@drawable/button_secondary"
+                        android:textColor="@android:color/white" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <!-- Botón guardar -->
             <Button
                 android:id="@+id/saveActivityButton"
@@ -244,6 +297,7 @@
                 android:background="@drawable/button_save"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="24dp" />
+
 
         </LinearLayout>
 

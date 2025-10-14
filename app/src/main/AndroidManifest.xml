@@ -69,6 +69,11 @@
             android:parentActivityName=".MainActivity" />
             
         <activity
+            android:name=".RewardsActivity"
+            android:exported="false"
+            android:parentActivityName=".ProfileActivity" />
+            
+        <activity
             android:name=".ManageActivitiesActivity"
             android:exported="false"
             android:parentActivityName=".CaregiverModeActivity" />
@@ -77,6 +82,11 @@
             android:name=".StatisticsActivity"
             android:exported="false"
             android:parentActivityName=".CaregiverModeActivity" />
+            
+        <activity
+            android:name=".SequenceActivity"
+            android:exported="false"
+            android:parentActivityName=".TodayRoutineActivity" />
             
         <!-- Broadcast Receivers -->
         <receiver
