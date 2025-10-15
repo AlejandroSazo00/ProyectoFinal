@@ -1,6 +1,8 @@
 package com.example.mirutinavisual;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
@@ -65,6 +67,12 @@ public class LoginActivity extends AppCompatActivity implements TextToSpeech.OnI
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
+        
+        // Forzar color negro en EditText para APK
+        emailEditText.setTextColor(Color.BLACK);
+        passwordEditText.setTextColor(Color.BLACK);
+        emailEditText.setHintTextColor(Color.GRAY);
+        passwordEditText.setHintTextColor(Color.GRAY);
     }
 
     private void setupClickListeners() {

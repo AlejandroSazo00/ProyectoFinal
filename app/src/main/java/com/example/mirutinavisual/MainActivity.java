@@ -45,8 +45,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         // Inicializar Text-to-Speech
         textToSpeech = new TextToSpeech(this, this);
         
-        // Inicializar SharedPreferences
-        sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        // Inicializar SharedPreferences por usuario
+        String userId = getCurrentUserId();
+        sharedPreferences = getSharedPreferences("UserProfile_" + userId, MODE_PRIVATE);
         
         // Verificar si viene de una notificación
         checkNotificationIntent();
@@ -183,6 +184,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         // Obtener usuario de Firebase
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         
+        // Actualizar SharedPreferences con el usuario actual
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            sharedPreferences = getSharedPreferences("UserProfile_" + userId, MODE_PRIVATE);
+        }
+        
         String userName = sharedPreferences.getString("user_name", "");
         if (!userName.isEmpty()) {
             welcomeText.setText("¡Hola " + userName + "!");
@@ -204,6 +211,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         super.onResume();
         // Actualizar datos del usuario cuando regrese de la pantalla de perfil
         loadUserData();
+    }
+    
+    private String getCurrentUserId() {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        }
+        return "default_user"; // Fallback
     }
 
     private void showCaregiverPasswordDialog() {

@@ -182,7 +182,8 @@ public class RewardsActivity extends AppCompatActivity implements TextToSpeech.O
     }
     
     private void saveAvatarPictogram(String pictogramId) {
-        android.content.SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        String userId = getCurrentUserId();
+        android.content.SharedPreferences sharedPreferences = getSharedPreferences("UserProfile_" + userId, MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = sharedPreferences.edit();
         
         // Guardar el ID del pictograma como avatar
@@ -191,6 +192,14 @@ public class RewardsActivity extends AppCompatActivity implements TextToSpeech.O
         editor.apply();
         
         System.out.println("REWARDS: Avatar pictograma guardado: " + pictogramId);
+    }
+    
+    private String getCurrentUserId() {
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        }
+        return "default_user"; // Fallback
     }
 
     @Override

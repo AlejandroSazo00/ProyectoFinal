@@ -23,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.io.IOException;
 import java.util.Locale;
 
@@ -50,8 +53,9 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
         // Inicializar Text-to-Speech
         textToSpeech = new TextToSpeech(this, this);
         
-        // Inicializar SharedPreferences
-        sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        // Inicializar SharedPreferences por usuario
+        String userId = getCurrentUserId();
+        sharedPreferences = getSharedPreferences("UserProfile_" + userId, MODE_PRIVATE);
         
         // Inicializar vistas
         initViews();
@@ -362,6 +366,14 @@ public class ProfileActivity extends AppCompatActivity implements TextToSpeech.O
                 showToast("Permiso de almacenamiento denegado");
             }
         }
+    }
+    
+    private String getCurrentUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        }
+        return "default_user"; // Fallback
     }
 
     @Override

@@ -9,6 +9,15 @@
 
     <style name="Theme.MiRutinaVisual" parent="Base.Theme.MiRutinaVisual" />
     
+    <!-- Tema específico para EditText con texto negro forzado -->
+    <style name="EditTextTheme" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:textColorHint">#FF666666</item>
+        <item name="colorControlNormal">#FF000000</item>
+        <item name="colorControlActivated">#FF000000</item>
+        <item name="colorControlHighlight">#FF000000</item>
+    </style>
+    
     <!-- Tema para pantalla completa de recordatorios -->
     <style name="FullScreenTheme" parent="Theme.MiRutinaVisual">
         <item name="android:windowNoTitle">true</item>

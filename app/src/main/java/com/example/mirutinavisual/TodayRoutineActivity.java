@@ -1,6 +1,7 @@
 package com.example.mirutinavisual;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,8 +38,9 @@ public class TodayRoutineActivity extends AppCompatActivity implements TextToSpe
     private DatabaseReference databaseReference;
     
     private ImageButton backButton;
-    private TextView dateText;
+    private TextView dateText, emptyStateSubtitle;
     private LinearLayout emptyStateText;
+    private CardView createRoutineButton;
     private RecyclerView activitiesRecyclerView;
     private ProgressBar loadingProgressBar;
     
@@ -110,6 +113,8 @@ public class TodayRoutineActivity extends AppCompatActivity implements TextToSpe
             backButton = findViewById(R.id.backButton);
             dateText = findViewById(R.id.dateText);
             emptyStateText = findViewById(R.id.emptyStateText);
+            emptyStateSubtitle = findViewById(R.id.emptyStateSubtitle);
+            createRoutineButton = findViewById(R.id.createRoutineButton);
             activitiesRecyclerView = findViewById(R.id.activitiesRecyclerView);
             loadingProgressBar = findViewById(R.id.loadingProgressBar);
             
@@ -121,6 +126,9 @@ public class TodayRoutineActivity extends AppCompatActivity implements TextToSpe
                 dateText.setText(currentDate);
             }
             
+            // Configurar interfaz según el modo
+            configureUIForMode();
+            
             if (emptyStateText != null) {
                 emptyStateText.setVisibility(View.GONE);
             }
@@ -131,6 +139,30 @@ public class TodayRoutineActivity extends AppCompatActivity implements TextToSpe
             
         } catch (Exception e) {
             showToast("Error al inicializar vistas: " + e.getMessage());
+        }
+    }
+    
+    private void configureUIForMode() {
+        // Verificar si estamos en modo niño
+        SharedPreferences prefs = getSharedPreferences("AppMode", MODE_PRIVATE);
+        boolean isChildMode = prefs.getBoolean("child_mode", false);
+        
+        if (isChildMode) {
+            // Modo niño: ocultar botón de crear rutina
+            if (createRoutineButton != null) {
+                createRoutineButton.setVisibility(View.GONE);
+            }
+            if (emptyStateSubtitle != null) {
+                emptyStateSubtitle.setText("Pide a tu cuidador que agregue actividades");
+            }
+        } else {
+            // Modo cuidador: mostrar botón de crear rutina
+            if (createRoutineButton != null) {
+                createRoutineButton.setVisibility(View.VISIBLE);
+            }
+            if (emptyStateSubtitle != null) {
+                emptyStateSubtitle.setText("Toca el botón ➕ para agregar tu primera actividad");
+            }
         }
     }
 
